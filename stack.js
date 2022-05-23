@@ -55,7 +55,7 @@ class Stack {
       
       throw Stack.error('object is not iterable');
     
-    if (typeof iterable[Symbol.iterator] != 'function')
+    if (typeof iterable[Symbol.iterator] !== 'function')
       throw Stack.error('object is not iterable');
     
     let n = 0;
