@@ -26,11 +26,13 @@ class Stack {
   static fromIterable(iterable) {
     if (typeof iterable[Symbol.iterator] !== 'function') {
       throw new Error('Error');
+      
     } else {
       const stack = new Stack();
       for (let item of iterable) {
         stack.push(item);
       }
+      
       return stack;
     }
   }
