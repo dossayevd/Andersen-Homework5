@@ -1,43 +1,70 @@
 class Stack {
-  constructor() {
-    this.items = [];
+  count = 0;
+  size = 0;
+  items = [];
+
+  constructor(size = 10) {
+    if (Number.isInteger(size) === false || size < 0)
+      throw Stack.error('Incorrect size');
+    this.size = parseInt(size, 10);
   }
 
-  push(element) {
-    this.items.push(element);
+  static error(message) {
+    return 'Stack error: ' + message;
+  }
+
+  push(value) {
+    if (this.count === this.size) {
+      throw Stack.error('overflow');
+
+      return;
+    }
+    this.items[this.count] = value;
+    this.count++;
   }
 
   pop() {
-    if (this.items.length === 0) throw new Error('Error');
-
-    return this.items.pop();
+    if (this.count === 0) {
+      throw Stack.error('nothing to pop');
+      
+      return;
+    }
+    let value = this.peek();
+    this.count--;
+    delete this.items[this.count];
+    
+    return value;
   }
 
   peek() {
-    if (this.items.length === 0) return null;
-
-    return this.items[this.items.length - 1];
+    if (this.count === 0) return null;
+    
+    return this.items[this.count - 1];
   }
 
   isEmpty() {
-    return this.items.length === 0;
+    return this.count === 0;
+  }
+
+  toArray() {
+    return new Array(this.items);
   }
 
   static fromIterable(iterable) {
-    if (typeof iterable[Symbol.iterator] !== 'function') {
-      throw new Error('Error');
+    if (iterable === null || iterable === undefined)
       
-    } else {
-      const stack = new Stack();
-      for (let item of iterable) {
-        stack.push(item);
-      }
-      
-      return stack;
-    }
+      throw Stack.error('object is not iterable');
+    
+    if (typeof iterable[Symbol.iterator] != 'function')
+      throw Stack.error('object is not iterable');
+    
+    let n = 0;
+    for (let obj of iterable) n++;
+    let stack = new Stack(n);
+    for (let obj of iterable) stack.push(obj);
+    
+    return stack;
   }
 }
-
-let myStack = new Stack();
 
 module.exports = { Stack };
