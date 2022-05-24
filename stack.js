@@ -1,11 +1,21 @@
+class StackItem {
+  value;
+  prev;
+  constructor(value, prev) {
+    this.value = value;
+    this.prev = prev;
+  }
+}
+
 class Stack {
   count = 0;
   size = 0;
-  items = [];
+  topItem = null;
 
   constructor(size = 10) {
     if (Number.isInteger(size) === false || size < 0)
-      throw Stack.error('Incorrect size');
+      throw Stack.error('Incorrect size!');
+
     this.size = parseInt(size, 10);
   }
 
@@ -15,31 +25,34 @@ class Stack {
 
   push(value) {
     if (this.count === this.size) {
-      throw Stack.error('overflow');
-
+      throw Stack.error('overflow!');
+      
       return;
     }
-    this.items[this.count] = value;
+    this.topItem = new StackItem(value, this.topItem);
     this.count++;
   }
 
   pop() {
     if (this.count === 0) {
-      throw Stack.error('nothing to pop');
+      throw Stack.error('nothing to pop!');
       
       return;
     }
-    let value = this.peek();
+
+    let value = this.topItem.value;
+    let del = this.topItem;
+    this.topItem = this.topItem.prev;
     this.count--;
-    delete this.items[this.count];
-    
+    del = null;
+
     return value;
   }
 
   peek() {
     if (this.count === 0) return null;
-    
-    return this.items[this.count - 1];
+
+    return this.topItem.value;
   }
 
   isEmpty() {
@@ -47,24 +60,35 @@ class Stack {
   }
 
   toArray() {
-    return new Array(this.items);
+    let currItem = this.topItem;
+    let arr = new Array();
+    let i = 0;
+
+    while (currItem != null) {
+      arr[i++] = currItem.value;
+      currItem = currItem.prev;
+    }
+
+    return arr;
   }
 
   static fromIterable(iterable) {
     if (iterable === null || iterable === undefined)
-      
-      throw Stack.error('object is not iterable');
-    
+      throw Stack.error('object not iterable!');
+
     if (typeof iterable[Symbol.iterator] !== 'function')
-      throw Stack.error('object is not iterable');
-    
+      throw Stack.error('object not iterable!');
+
     let n = 0;
+
     for (let obj of iterable) n++;
     let stack = new Stack(n);
+
     for (let obj of iterable) stack.push(obj);
     
     return stack;
   }
 }
+
 
 module.exports = { Stack };
